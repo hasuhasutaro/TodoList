@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Todo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TodoController extends Controller
@@ -78,6 +79,16 @@ class TodoController extends Controller
         ]);
 
         $todo -> state = $validated['state'];
+
+        if ($todo -> state == 0) {
+            $todo -> started_at = null;
+            $todo -> completed_at = null;
+        } else if ($todo -> state == 1) {
+            $todo -> started_at = Carbon::now();
+            $todo -> completed_at = null;
+        } else {
+            $todo -> completed_at = Carbon::now();
+        }
         $todo -> save();
 
         return redirect(route('todos.index'));
